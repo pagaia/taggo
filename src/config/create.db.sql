@@ -1,0 +1,44 @@
+DROP DATABASE taggo;
+CREATE DATABASE IF NOT EXISTS taggo;
+USE taggo;
+
+CREATE TABLE IF NOT EXISTS `bookmarks` (
+  id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  uuid varchar(48) NOT NULL UNIQUE,
+  uri varchar(255) NOT NULL,
+  name varchar(255) NOT NULL UNIQUE,
+  active BOOLEAN DEFAULT false
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+
+CREATE TABLE IF NOT EXISTS `tag` (
+  id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  uuid varchar(48) NOT NULL UNIQUE,
+  name varchar(255) NOT NULL,
+  active BOOLEAN DEFAULT false
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
+
+DELIMITER ;;
+CREATE TRIGGER bookmarks_uuid BEFORE
+INSERT ON bookmarks FOR EACH ROW BEGIN IF new.uuid IS NULL THEN
+SET
+  new.uuid = uuid();
+END IF;
+END ;;
+
+DELIMITER ;;
+CREATE TRIGGER tag_uuid BEFORE
+INSERT ON tag FOR EACH ROW BEGIN IF new.uuid IS NULL THEN
+SET
+  new.uuid = uuid();
+END IF;
+END ;;
+
+CREATE TABLE IF NOT EXISTS `tag2book` (
+  id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  book_id INT NOT NULL,
+  tag_id INT NOT NULL,
+  FOREIGN KEY (book_id) REFERENCES bookmarks(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+  FOREIGN KEY (tag_id) REFERENCES tag(id)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
