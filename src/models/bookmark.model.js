@@ -2,16 +2,16 @@ import sql from "./db.js";
 
 // constructor
 const Bookmark = function (book) {
-  console.debug("book: ", book)
+  console.debug("book: ", book);
   this.uri = book.uri;
   this.name = book.name;
   this.active = book.active;
 };
 
 Bookmark.create = (newBookmark, result) => {
-  sql.query("INSERT INTO bookmarks SET ?", newBookmark, (err, res) => {
+  sql.query("INSERT INTO bookmark SET ?", newBookmark, (err, res) => {
     if (err) {
-      console.log("error: ", err,newBookmark);
+      console.log("error: ", err, newBookmark);
       result(err, null);
       return;
     }
@@ -22,7 +22,7 @@ Bookmark.create = (newBookmark, result) => {
 };
 
 Bookmark.findById = (bookmarkId, result) => {
-  sql.query(`SELECT * FROM bookmarks WHERE id = ${bookmarkId}`, (err, res) => {
+  sql.query(`SELECT * FROM bookmark WHERE id = ${bookmarkId}`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -40,22 +40,44 @@ Bookmark.findById = (bookmarkId, result) => {
   });
 };
 
+Bookmark.findByName = (name, result) => {
+  sql.query(
+    `SELECT * FROM bookmark WHERE name like ?`,
+    "%" + name + "%",
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+
+      if (res.length) {
+        result(null, res);
+        return;
+      }
+
+      // not found bookmark with the name
+      result({ kind: "not_found" }, null);
+    }
+  );
+};
+
 Bookmark.getAll = (result) => {
-  sql.query("SELECT * FROM bookmarks", (err, res) => {
+  sql.query("SELECT * FROM bookmark", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
       return;
     }
 
-    console.log("bookmarks: ", res);
+    console.log("bookmark: ", res);
     result(null, res);
   });
 };
 
 Bookmark.updateById = (id, bookmark, result) => {
   sql.query(
-    "UPDATE bookmarks SET uri = ?, name = ?, active = ? WHERE id = ?",
+    "UPDATE bookmark SET uri = ?, name = ?, active = ? WHERE id = ?",
     [bookmark.uri, bookmark.name, bookmark.active, id],
     (err, res) => {
       if (err) {
@@ -77,7 +99,7 @@ Bookmark.updateById = (id, bookmark, result) => {
 };
 
 Bookmark.remove = (id, result) => {
-  sql.query("DELETE FROM bookmarks WHERE id = ?", id, (err, res) => {
+  sql.query("DELETE FROM bookmark WHERE id = ?", id, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -96,14 +118,14 @@ Bookmark.remove = (id, result) => {
 };
 
 Bookmark.removeAll = (result) => {
-  sql.query("DELETE FROM bookmarks", (err, res) => {
+  sql.query("DELETE FROM bookmark", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
       return;
     }
 
-    console.log(`deleted ${res.affectedRows} bookmarks`);
+    console.log(`deleted ${res.affectedRows} bookmark`);
     result(null, res);
   });
 };

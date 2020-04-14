@@ -1,6 +1,7 @@
 import express from "express";
-import bodyParser  from "body-parser";
-import routes from "./routes/bookmark.routes.js"
+import bodyParser from "body-parser";
+import bookmarkRoutes from "./routes/bookmark.routes.js";
+import tagRoutes from "./routes/tag.routes.js";
 
 const app = express();
 
@@ -15,8 +16,8 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to pagaia test application." });
 });
 
-routes(app);
-
+bookmarkRoutes(app);
+tagRoutes(app);
 
 // set port, listen for requests
 app.listen(3000, () => {

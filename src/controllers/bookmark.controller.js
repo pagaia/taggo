@@ -1,4 +1,5 @@
 import Bookmark from "../models/bookmark.model.js";
+import Tag2book from "../models/tag2book.model.js";
 
 // Create and Save a new Bookmark
 exports.create = (req, res) => {
@@ -9,7 +10,7 @@ exports.create = (req, res) => {
     });
   }
 
-  console.debug("req: ",req.body )
+  console.debug("req: ", req.body);
   // Create a Bookmark
   const bookmark = new Bookmark({
     uri: req.body.uri,
@@ -53,6 +54,55 @@ exports.findOne = (req, res) => {
           message: "Error retrieving Bookmark with id " + req.params.bookmarkId,
         });
       }
+    } else res.send(data);
+  });
+};
+
+// Find Bookmark by Name
+exports.findByName = (req, res) => {
+  const { name } = req.params;
+  Bookmark.findByName(name, (err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(404).send({
+          message: `Not found Bookmark with name ${name}.`,
+        });
+      } else {
+        res.status(500).send({
+          message: "Error retrieving Bookmark with name " + name,
+        });
+      }
+    } else res.send(data);
+  });
+};
+
+// Find Bookmark by Tag
+exports.findByTag = (req, res) => {
+  const { tag } = req.params;
+  Tag2book.findByTag(tag, (err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(404).send({
+          message: `Not found Bookmark with tag ${tag}.`,
+        });
+      } else {
+        res.status(500).send({
+          message: "Error retrieving Bookmark with tag " + tag,
+        });
+      }
+    } else res.send(data);
+  });
+};
+
+// Link Bookmark to Tag
+exports.link = (req, res) => {
+  const { bookmarkId, tag } = req.params;
+
+  Tag2book.create({ bookmarkId, tag }, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        message: "Error adding tag " + tag + " for Bookmark " + bookmarkId,
+      });
     } else res.send(data);
   });
 };

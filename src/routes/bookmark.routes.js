@@ -8,8 +8,20 @@ const routes = (app) => {
   // Retrieve all Bookmarks
   app.get("/bookmarks", bookmarks.findAll);
 
+  // Search Bookmarks by name
+  app.get("/bookmarks/name/:name", bookmarks.findByName);
+
+  // Add tag to Bookmark
+  app.post("/bookmarks/:bookmarkId/:tag", bookmarks.link);
+
+  // Search Bookmarks by tag
+  app.get("/bookmarks/tag/:tag", bookmarks.findByTag);
+
   // Retrieve a single Bookmark with bookmarkId
   app.get("/bookmarks/:bookmarkId", bookmarks.findOne);
+
+   // Search Bookmarks by name
+   app.get("/bookmarks", bookmarks.findAll);
 
   // Update a Bookmark with bookmarkId
   app.put("/bookmarks/:bookmarkId", bookmarks.update);
@@ -17,8 +29,6 @@ const routes = (app) => {
   // Delete a Bookmark with bookmarkId
   app.delete("/bookmarks/:bookmarkId", bookmarks.delete);
 
-  // Create a new Bookmark
-  app.delete("/bookmarks", bookmarks.deleteAll);
 };
 
 export default routes;
