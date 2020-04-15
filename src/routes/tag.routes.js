@@ -3,28 +3,28 @@ import tags from "../controllers/tag.controller.js";
 const routes = (app) => {
 
   // Create a new Tag
-  app.delete("/tags", tags.deleteAll);
+  app.delete("/api/tags", tags.deleteAll);
 
   // Create a new Tag
-  app.post("/tags", tags.create);
+  app.post("/api/tags", tags.create);
 
   // Retrieve all Tags
-  app.get("/tags", tags.findAll);
+  app.get("/api/tags", tags.findAll);
 
   // Search Tags by name
-  app.get("/tags/name/:name", tags.findByName);
+  app.get("/api/tags/name/:name", tags.findByName);
 
   // Retrieve a single Tag with tagId
-  app.get("/tags/:tagId", tags.findOne);
+  app.get("/api/tags/:tagId", tags.findOne);
 
   // Update a Tag with tagId
-  app.put("/tags/:tagId", tags.update);
+  app.put("/api/tags/:tagId", tags.update);
 
   // Delete a Tag with tagId
-  app.delete("/tags/:tagId", tags.delete);
+  app.delete("/api/tags/:tagId", tags.delete);
 
   // Create a new Tag
-  app.delete("/tags", tags.deleteAll);
+  app.delete("/api/tags", tags.deleteAll);
 
 };
 
