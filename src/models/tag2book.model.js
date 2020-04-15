@@ -7,34 +7,78 @@ const Tag2book = function (link) {
   this.tagId = link.tagId;
 };
 
-Tag2book.create = ({ bookmarkId, tag }, result) => {
-  sql.query(
-    `CALL LinkBook2Tag (?,?, @pTagId);`,
-    [bookmarkId, tag],
-    (err, res) => {
-      if (err) {
-        console.log("error: ", err, bookmarkId, tag);
-        result(err, null);
-        return;
+const insertLink = (conn, bookmarkId, tagId, callBack) => (
+  error,
+  results,
+  fields
+) => {
+  if (error) {
+    return conn.rollback(function () {
+      callBack(error, null);
+    });
+  }
+  const id = tagId || results.insertId;
+
+  conn.query(
+    "INSERT IGNORE INTO tag2book (bookId, tagId) VALUES (?, ?);",
+    [bookmarkId, id],
+
+    function (error, results, fields) {
+      if (error) {
+        return conn.rollback(function () {
+          callBack(error, null);
+        });
       }
 
-      sql.query(`SELECT @pTagId;`, (err, res) => {
+      conn.commit(function (err) {
         if (err) {
-          console.log("error: ", err, bookmarkId, tag);
-          result(err, null);
-          return;
+          return conn.rollback(function () {
+            callBack(error, null);
+          });
         }
-
-        console.log("created tag2book: ", { id: res.pTagId });
-        result(null, { id: res.pTagId });
+        callBack(null, results.id);
+        console.log("success!");
       });
     }
   );
-} ;
+};
+
+Tag2book.link = ({ bookmarkId, tag }, callBack) => {
+  sql.getConnection(function (err, conn) {
+    conn.beginTransaction(function (err) {
+      if (err) {
+        console.log("Error: ", err);
+        callBack(err, null);
+      }
+      conn.query("SELECT id FROM tag WHERE name = ?;", tag, function (
+        error,
+        results,
+        fields
+      ) {
+        if (error) {
+          return conn.rollback(function () {
+            console.log("Error: ", error);
+            callBack(error, null);
+          });
+        }
+
+        if (!results[0] || results[0].id) {
+          conn.query(
+            "INSERT INTO tag (name) VALUES (?) ;",
+            tag,
+            insertLink(conn, bookmarkId, undefined, callBack)
+          );
+        } else {
+          insertLink(conn, bookmarkId, results[0].id, callBack)();
+        }
+      });
+    });
+  });
+};
 
 Tag2book.findByTag = (name, result) => {
   sql.query(
-    `SELECT * FROM bookmark b 
+    `SELECT b.name, b.uri, b.uuid, t.name as tag FROM bookmark b 
     INNER JOIN tag2book t2b on t2b.bookId = b.id
     INNER JOIN tag t on t2b.tagId=t.id
     WHERE t.name like ?`,

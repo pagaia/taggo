@@ -98,7 +98,7 @@ exports.findByTag = (req, res) => {
 exports.link = (req, res) => {
   const { bookmarkId, tag } = req.params;
 
-  Tag2book.create({ bookmarkId, tag }, (err, data) => {
+  Tag2book.link({ bookmarkId, tag }, (err, data) => {
     if (err) {
       res.status(500).send({
         message: "Error adding tag " + tag + " for Bookmark " + bookmarkId,
