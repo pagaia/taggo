@@ -13,11 +13,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Serve the static files from the React app
-app.use(express.static(path.join(__dirname, '../client/build')));
+// app.use(express.static(path.join(__dirname, '../client/build')));
 
 // simple route
 app.get("/api/test", (req, res) => {
-  res.json({ message: "Welcome to pagaia test application." });
+  res.json({ message: "Welcome to taggo bookmark app." });
 });
 
 bookmarkRoutes(app);
@@ -25,10 +25,11 @@ tagRoutes(app);
 
 // Handles any requests that don't match the ones above
 app.get('*', (req,res) =>{
-  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+  res.json({ message: "Welcome to taggo bookmark app." });
+//  res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
 
 // set port, listen for requests
-app.listen(3000, () => {
-  console.log("Server is running on port 3000.");
+app.listen(5000, () => {
+  console.log("Server is running on port 5000.");
 });

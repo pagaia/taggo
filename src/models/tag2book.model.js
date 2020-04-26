@@ -13,6 +13,7 @@ const insertLink = (conn, bookmarkId, tagId, callBack) => (
   fields
 ) => {
   if (error) {
+    console.error("insertLink error: ", error)
     return conn.rollback(function () {
       callBack(error, null);
     });
@@ -55,6 +56,7 @@ Tag2book.link = ({ bookmarkId, tag }, callBack) => {
         results,
         fields
       ) {
+        console.log("SELECT id FROM tag WHERE name = ?: ", tag)
         if (error) {
           return conn.rollback(function () {
             console.log("Error: ", error);
@@ -62,7 +64,10 @@ Tag2book.link = ({ bookmarkId, tag }, callBack) => {
           });
         }
 
-        if (!results[0] || results[0].id) {
+        console.log("results ", results)
+
+        if (!results[0] || !results[0].id) {
+         
           conn.query(
             "INSERT INTO tag (name) VALUES (?) ;",
             tag,

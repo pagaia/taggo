@@ -20,7 +20,6 @@ Tag.create = (newTag, result) => {
   });
 };
 
-
 Tag.findById = (tagId, result) => {
   sql.query(`SELECT * FROM tag WHERE id = ${tagId}`, (err, res) => {
     if (err) {
@@ -81,16 +80,20 @@ Tag.findByName = (name, result) => {
 };
 
 Tag.getAll = (result) => {
-  sql.query("SELECT * FROM tag", (err, res) => {
-    if (err) {
-      console.log("error: ", err);
-      result(null, err);
-      return;
-    }
+  sql.query(
+    `SELECT tag.name as tag, count(*) as tot 
+  FROM tag join tag2book on tag.id=tag2book.tagId GROUP BY tag.name;`,
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(null, err);
+        return;
+      }
 
-    console.log("tag: ", res);
-    result(null, res);
-  });
+      console.log("tag: ", res);
+      result(null, res);
+    }
+  );
 };
 
 Tag.updateById = (id, tag, result) => {

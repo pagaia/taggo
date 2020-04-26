@@ -1,7 +1,7 @@
 {
-  "name": "nodejs-express-mysql",
+  "name": "taggo",
   "version": "1.0.0",
-  "description": "Simple CRUD server zith mysql and expressjs",
+  "description": "Taggo API server",
   "main": "dist/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,6 +9,8 @@
     "compile:dev": "npm run clean && babel src --out-dir dist",
     "build:dev": "npm run compile:dev",
     "dev:dist": "npm run build:dev && node --inspect dist/server.js",
+    "build:client" : "cd client && yarn run build",
+    "Noprestart": "npm run build:client",
     "start": "npm run build:dev && nodemon --watch src --exec npm run dev:dist"
   },
   "keywords": [
