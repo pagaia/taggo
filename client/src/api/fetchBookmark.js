@@ -1,9 +1,11 @@
 import axios from "axios";
 
 // Make a request for a user with a given ID
-const getBookmarks = () =>
-  axios
-    .get("/api/bookmarks")
+export const getBookmarks = (tag) => {
+  const url = tag ? `/api/bookmarks/tag/${tag}` : `/api/bookmarks`;
+
+  return axios
+    .get(url)
     .then(function (response) {
       // handle success
       console.log(response);
@@ -18,7 +20,5 @@ const getBookmarks = () =>
       console.log("finally ended");
       console.log(response);
       return response;
-
     });
-
-export default getBookmarks;
+};
