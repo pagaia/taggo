@@ -1,11 +1,12 @@
-import React, { useEffect } from "react";
-import { Toolbar, Typography, makeStyles } from "@material-ui/core";
+import { makeStyles, Toolbar, Typography } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
+import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import AddBookmark from "./AddBookmark";
 import BookmarkList from "./Bookmark";
 import ScrollTop from "./ScrollTop";
 import TagList from "./TagList";
 import TopBar from "./TopBar";
-import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles({
   title: {
@@ -48,6 +49,7 @@ const Home = (props) => {
             <TagList />
           </Grid>
         </Grid>
+        <AddBookmark />
         <ScrollTop />
       </Grid>
     </Grid>

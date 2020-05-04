@@ -8,9 +8,25 @@ import Book from "./Book";
 const BookmarkList = ({ tag }) => {
   const [bookmarks, setBookmarks] = React.useState([]);
 
+  const groupBookAndSet = (list) => {
+    const groupList = {};
+    list &&
+      list.forEach((element) => {
+        if (!groupList[element.uuid]) {
+          groupList[element.uuid] = { ...element, tags: [element.tag] };
+        } else {
+          groupList[element.uuid].tags = [
+            ...groupList[element.uuid].tags,
+            element.tag,
+          ];
+        }
+      });
+    setBookmarks(Object.values(groupList));
+  };
+
   const fetchBook = (tag) => {
     getBookmarks(tag).then((response) => {
-      setBookmarks(response.data);
+      groupBookAndSet(response.data);
     });
   };
 
@@ -18,6 +34,7 @@ const BookmarkList = ({ tag }) => {
     fetchBook(tag);
   }, [tag]);
 
+  console.log("bookmarks: ",bookmarks)
   return (
     <List>
       {bookmarks.map((book, index) => (

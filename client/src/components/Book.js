@@ -5,6 +5,7 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import TagLink from "./TagLink";
 
 const useStyles = makeStyles({
   root: {
@@ -18,7 +19,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Book({book}) {
+export default function Book({ book }) {
   const classes = useStyles();
 
   return (
@@ -29,7 +30,9 @@ export default function Book({book}) {
           color="textSecondary"
           gutterBottom
         >
-          Word of the Day
+          {book.tags.map((tag, index) => (
+            <TagLink key={tag} tag={tag} />
+          ))}
         </Typography>
         <Typography variant="h5" component="h2">
           {book.name}

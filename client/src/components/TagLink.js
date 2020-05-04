@@ -12,9 +12,12 @@ const useStyles = makeStyles({
 const TagLink = ({ tag, tot }) => {
   const classes = useStyles();
 
+  if (!tag) {
+    return null;
+  }
   return (
     <Link to={`/tag/${tag}`} className={classes.link}>
-      #{tag} ({tot})
+      #{tag} {tot && `(${tot})`}
     </Link>
   );
 };

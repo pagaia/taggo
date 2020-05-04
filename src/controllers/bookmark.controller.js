@@ -31,13 +31,19 @@ exports.create = (req, res) => {
 
 // Retrieve all Bookmarks from the database.
 exports.findAll = (req, res) => {
-  Bookmark.getAll((err, data) => {
-    if (err)
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving bookmarks.",
-      });
-    else res.send(data);
+  Tag2book.findAll((err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(404).send({
+          message: `Not found Bookmark.`,
+        });
+      } else {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving bookmarks.",
+        });
+      }
+    } else res.send(data);
   });
 };
 

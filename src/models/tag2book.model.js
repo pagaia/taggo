@@ -86,8 +86,34 @@ Tag2book.findByTag = (name, result) => {
     `SELECT b.name, b.uri, b.uuid, t.name as tag FROM bookmark b 
     INNER JOIN tag2book t2b on t2b.bookId = b.id
     INNER JOIN tag t on t2b.tagId=t.id
-    WHERE t.name like ?`,
+    WHERE t.name like ?
+    ORDER BY b.name`,
     "%" + name + "%",
+    (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+
+      if (res.length) {
+        result(null, res);
+        return;
+      }
+
+      // not found tag2book with the name
+      result({ kind: "not_found" }, null);
+    }
+  );
+};
+
+
+Tag2book.findAll = (result) => {
+  sql.query(
+    `SELECT b.name, b.uri, b.uuid, t.name as tag FROM bookmark b 
+    LEFT JOIN tag2book t2b on t2b.bookId = b.id
+    LEFT JOIN tag t on t2b.tagId=t.id
+    ORDER BY b.name`,
     (err, res) => {
       if (err) {
         console.log("error: ", err);
